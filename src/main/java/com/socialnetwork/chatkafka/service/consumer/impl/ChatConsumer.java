@@ -1,11 +1,11 @@
 package com.socialnetwork.chatkafka.service.consumer.impl;
 
 import com.socialnetwork.chatkafka.service.consumer.IChatConsumer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -16,6 +16,7 @@ import java.util.concurrent.Flow;
 import static com.socialnetwork.chatkafka.util.ChatUtils.generateUniqueChatId;
 
 @Service
+@Slf4j
 public class ChatConsumer implements IChatConsumer {
     private Map<String, Flow.Subscriber<String>> subscribers = new ConcurrentHashMap<>();
 
@@ -28,6 +29,7 @@ public class ChatConsumer implements IChatConsumer {
     @KafkaListener(topics = "chat")
     public void consume(@Payload String message,
                         @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key) throws IOException {
+        log.info("Received msg: {} with key: {}", message, key);
         Flow.Subscriber<String> subscriber = subscribers.get(key);
         if (subscriber != null) {
             subscriber.onNext(message);
