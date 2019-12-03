@@ -5,20 +5,32 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Flow;
 
-public class ChatConsumer implements IChatConsumer {
-    Map<>
-    @Override
-    public void subscribeToMessages(int senderId, Flow.Subscriber<String> subscriber) {
+import static com.socialnetwork.chatkafka.util.ChatUtils.generateUniqueChatId;
 
+@Service
+public class ChatConsumer implements IChatConsumer {
+    private Map<String, Flow.Subscriber<String>> subscribers = new ConcurrentHashMap<>();
+
+    @Override
+    public void subscribeToMessages(int senderId, int receiverId, Flow.Subscriber<String> subscriber) {
+        String uniqueId = generateUniqueChatId(senderId, receiverId);
+        subscribers.put(uniqueId, subscriber);
     }
 
-    @KafkaListener(topics = "chat", groupId = "group_id")
+    @KafkaListener(topics = "chat")
     public void consume(@Payload String message,
-                        @Header(KafkaHeaders.MESSAGE_KEY) int key) throws IOException {
-        consumerRecord.
+                        @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key) throws IOException {
+        Flow.Subscriber<String> subscriber = subscribers.get(key);
+        if (subscriber != null) {
+            subscriber.onNext(message);
+        }
     }
 }

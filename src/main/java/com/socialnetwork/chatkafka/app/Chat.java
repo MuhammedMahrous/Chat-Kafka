@@ -1,7 +1,7 @@
 package com.socialnetwork.chatkafka.app;
 
-import com.socialnetwork.chatkafka.service.subscriber.ChatSubscriber;
 import com.socialnetwork.chatkafka.service.IChatService;
+import com.socialnetwork.chatkafka.service.subscriber.ChatSubscriber;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -18,13 +18,12 @@ public class Chat {
         this.chatService = chatService;
     }
 
-    @PostConstruct
     public void startChat() {
         System.out.println("please enter you id and your friend id");
         int userId = scanner.nextInt();
         int friendId = scanner.nextInt();
         String input = "";
-        chatService.subscribeToMessages(friendId, ChatSubscriber.builder().senderId(friendId).build());
+        chatService.subscribeToMessages(friendId, userId, ChatSubscriber.builder().senderId(friendId).build());
         System.out.println("You can start chatting now");
         do {
             input = scanner.nextLine();

@@ -2,6 +2,7 @@ package com.socialnetwork.chatkafka.service.producer.impl;
 
 import com.socialnetwork.chatkafka.service.producer.IChatProducer;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.config.KafkaListenerContainerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 

@@ -20,7 +20,7 @@ public class ChatService implements IChatService {
     }
 
     @Override
-    public void subscribeToMessages(int senderId, Flow.Subscriber<String> subscriber) {
-        consumer.subscribeToMessages(senderId, subscriber);
+    public void subscribeToMessages(int senderId, int receiverId, Flow.Subscriber<String> subscriber) {
+        consumer.subscribeToMessages(senderId,receiverId, subscriber);
     }
 }
